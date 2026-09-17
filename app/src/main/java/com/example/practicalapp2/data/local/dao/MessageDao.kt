@@ -28,7 +28,16 @@ interface MessageDao {
     @Query("SELECT * FROM messages WHERE content LIKE '%' || :query || '%' OR senderName LIKE '%' || :query || '%' ORDER BY timestamp DESC")
     fun searchMessagesFlow(query: String): Flow<List<MessageEntity>>
 
-    @Query("SELECT * FROM messages WHERE (messageType = :type OR :type = 'ALL') AND (content LIKE '%' || :query || '%' OR senderName LIKE '%' || :query || '%') ORDER BY timestamp DESC")
+    @Query("""
+        SELECT * FROM messages 
+        WHERE (
+            (:type = 'ALL') 
+            OR (:type = 'DELETED' AND (isDeleted = 1 OR messageType = 'DELETED')) 
+            OR (messageType = :type)
+        ) 
+        AND (content LIKE '%' || :query || '%' OR senderName LIKE '%' || :query || '%') 
+        ORDER BY timestamp DESC
+    """)
     fun getFilteredMessagesFlow(type: String, query: String): Flow<List<MessageEntity>>
 
     @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY timestamp DESC LIMIT 1")
@@ -37,8 +46,25 @@ interface MessageDao {
     @Query("SELECT * FROM messages WHERE senderName = :senderName ORDER BY timestamp DESC LIMIT 1")
     suspend fun getLastMessageForSender(senderName: String): MessageEntity?
 
-    @Query("SELECT COUNT(*) FROM messages WHERE senderName = :senderName AND content = :content AND ABS(timestamp - :timestamp) < 5000")
-    suspend fun checkDuplicate(senderName: String, content: String, timestamp: Long): Int
+    @Query("""
+        SELECT COUNT(*) FROM messages 
+        WHERE (chatId = :chatId OR senderName = :senderName) 
+        AND (
+            (timestamp = :timestamp) 
+            OR (content = :content AND ABS(timestamp - :timestamp) < 60000)
+        )
+    """)
+    suspend fun checkDuplicate(chatId: String, senderName: String, content: String, timestamp: Long): Int
+
+    @Query("""
+        DELETE FROM messages 
+        WHERE messageId NOT IN (
+            SELECT MIN(messageId) 
+            FROM messages 
+            GROUP BY chatId, content, (timestamp / 30000)
+        )
+    """)
+    suspend fun purgeDuplicateMessages(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessage(message: MessageEntity): Long

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -33,11 +34,13 @@ class WhatsDeleteViewModel(application: Application) : AndroidViewModel(applicat
     private val _selectedMediaType = MutableStateFlow(MessageType.IMAGE)
     val selectedMediaType: StateFlow<MessageType> = _selectedMediaType.asStateFlow()
 
-    // Captured messages flow filtered by both filterType and searchQuery
+    // Captured messages flow filtered by both filterType and searchQuery with UI-level deduplication
     val capturedMessages: StateFlow<List<MessageEntity>> = combine(_filterType, _searchQuery) { type, query ->
         Pair(type, query)
     }.flatMapLatest { (type, query) ->
         repository.getFilteredMessagesFlow(type, query)
+    }.map { list ->
+        deduplicateMessages(list)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     // Chats flow filtered by search query
@@ -51,12 +54,30 @@ class WhatsDeleteViewModel(application: Application) : AndroidViewModel(applicat
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    // Filtered media messages based on selected chip
+    // Filtered media messages based on selected chip with UI-level deduplication
     val mediaMessages: StateFlow<List<MessageEntity>> = _selectedMediaType
         .flatMapLatest { type ->
             repository.getMediaMessagesFlow(listOf(type))
+        }.map { list ->
+            deduplicateMessages(list)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private fun deduplicateMessages(messages: List<MessageEntity>): List<MessageEntity> {
+        val result = ArrayList<MessageEntity>(messages.size)
+        for (msg in messages) {
+            val isDuplicate = result.any { existing ->
+                val sameSender = existing.senderName.trim().equals(msg.senderName.trim(), ignoreCase = true)
+                val sameContent = existing.content.trim() == msg.content.trim()
+                val closeTime = kotlin.math.abs(existing.timestamp - msg.timestamp) < 30_000
+                (sameSender && sameContent && closeTime) || (sameSender && existing.timestamp == msg.timestamp)
+            }
+            if (!isDuplicate) {
+                result.add(msg)
+            }
+        }
+        return result
+    }
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query

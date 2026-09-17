@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
@@ -37,7 +38,24 @@ class ChatDetailViewModel(application: Application) : AndroidViewModel(applicati
             _chat.value = repository.getChatById(chatId)
         }
         return repository.getMessagesForChatFlow(chatId)
+            .map { deduplicateMessages(it) }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
+
+    private fun deduplicateMessages(messages: List<MessageEntity>): List<MessageEntity> {
+        val result = ArrayList<MessageEntity>(messages.size)
+        for (msg in messages) {
+            val isDuplicate = result.any { existing ->
+                val sameSender = existing.senderName.trim().equals(msg.senderName.trim(), ignoreCase = true)
+                val sameContent = existing.content.trim() == msg.content.trim()
+                val closeTime = kotlin.math.abs(existing.timestamp - msg.timestamp) < 30_000
+                (sameSender && sameContent && closeTime) || (sameSender && existing.timestamp == msg.timestamp)
+            }
+            if (!isDuplicate) {
+                result.add(msg)
+            }
+        }
+        return result
     }
 
     fun playAudio(messageId: Long, filePath: String) {

@@ -8,8 +8,12 @@ import com.example.practicalapp2.data.model.ChatSource
 import com.example.practicalapp2.data.model.MessageType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 data class BackupData(
@@ -24,6 +28,16 @@ class ChatRepository(context: Context) {
     private val chatDao = database.chatDao()
     private val messageDao = database.messageDao()
     private val gson = Gson()
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                messageDao.purgeDuplicateMessages()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun getAllChatsFlow(): Flow<List<ChatEntity>> = chatDao.getAllChatsFlow()
 
@@ -65,59 +79,75 @@ class ChatRepository(context: Context) {
         mediaUri: String? = null,
         detectedType: MessageType = MessageType.TEXT
     ): Boolean = withContext(Dispatchers.IO) {
-        val cleanSender = senderName.ifBlank { "WhatsApp User" }.trim()
-        val chatId = "${packageName}_${cleanSender.lowercase()}"
-        val isDeletionNotice = isDeletionMessage(content)
+        notificationMutex.withLock {
+            val cleanSender = normalizeText(senderName).ifBlank { "WhatsApp User" }
+            val cleanContent = normalizeText(content)
+            val chatId = "${packageName}_${cleanSender.lowercase()}"
+            val isDeletionNotice = isDeletionMessage(cleanContent)
 
-        if (isDeletionNotice) {
-            // Find last message from this sender and mark as deleted
-            val lastMsg = messageDao.getLastMessageForSender(cleanSender)
-            if (lastMsg != null && !lastMsg.isDeleted) {
-                messageDao.markMessageDeleted(lastMsg.messageId)
-                val currentChat = chatDao.getChatById(chatId)
-                if (currentChat != null) {
-                    chatDao.insertOrUpdate(
-                        currentChat.copy(
-                            lastMessage = "⚠️ [Deleted] ${lastMsg.content.ifBlank { lastMsg.messageType }}",
-                            lastTimestamp = timestamp
-                        )
-                    )
+            if (isDeletionNotice) {
+                // Find last message from this sender and mark as deleted
+                val lastMsg = messageDao.getLastMessageForSender(cleanSender)
+                if (lastMsg != null) {
+                    if (!lastMsg.isDeleted) {
+                        messageDao.markMessageDeleted(lastMsg.messageId)
+                        val currentChat = chatDao.getChatById(chatId)
+                        if (currentChat != null) {
+                            chatDao.insertOrUpdate(
+                                currentChat.copy(
+                                    lastMessage = "⚠️ [Deleted] ${lastMsg.content.ifBlank { lastMsg.messageType }}",
+                                    lastTimestamp = timestamp
+                                )
+                            )
+                        }
+                    }
+                    // Return early: preserve original captured message as deleted without inserting a duplicate card
+                    return@withLock true
                 }
             }
+
+            // Check for duplicate messages to prevent spam from repeated notifications
+            val duplicateCount = messageDao.checkDuplicate(chatId, cleanSender, cleanContent, timestamp)
+            if (duplicateCount > 0) {
+                return@withLock false
+            }
+
+            val avatarColor = getAvatarColor(cleanSender)
+
+            val chatEntity = ChatEntity(
+                chatId = chatId,
+                senderName = cleanSender,
+                packageName = packageName,
+                lastMessage = if (cleanContent.isBlank()) "[${detectedType.displayName}]" else cleanContent,
+                lastTimestamp = timestamp,
+                unreadCount = (chatDao.getChatById(chatId)?.unreadCount ?: 0) + 1,
+                chatSource = if (packageName.contains("w4b")) ChatSource.NOTIFICATION_BUSINESS.name else ChatSource.NOTIFICATION_WHATSAPP.name,
+                avatarColor = avatarColor
+            )
+            chatDao.insertOrUpdate(chatEntity)
+
+            val messageEntity = MessageEntity(
+                chatId = chatId,
+                senderName = cleanSender,
+                content = cleanContent,
+                timestamp = timestamp,
+                messageType = detectedType.name,
+                mediaUri = mediaUri,
+                isDeleted = isDeletionNotice,
+                originalContent = cleanContent
+            )
+            messageDao.insertMessage(messageEntity)
+            true
         }
+    }
 
-        // Check for duplicate messages to prevent spam from repeated notifications
-        val duplicateCount = messageDao.checkDuplicate(cleanSender, content, timestamp)
-        if (duplicateCount > 0) {
-            return@withContext false
+    suspend fun purgeDuplicates(): Int = withContext(Dispatchers.IO) {
+        try {
+            messageDao.purgeDuplicateMessages()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
         }
-
-        val avatarColor = getAvatarColor(cleanSender)
-
-        val chatEntity = ChatEntity(
-            chatId = chatId,
-            senderName = cleanSender,
-            packageName = packageName,
-            lastMessage = if (content.isBlank()) "[${detectedType.displayName}]" else content,
-            lastTimestamp = timestamp,
-            unreadCount = (chatDao.getChatById(chatId)?.unreadCount ?: 0) + 1,
-            chatSource = if (packageName.contains("w4b")) ChatSource.NOTIFICATION_BUSINESS.name else ChatSource.NOTIFICATION_WHATSAPP.name,
-            avatarColor = avatarColor
-        )
-        chatDao.insertOrUpdate(chatEntity)
-
-        val messageEntity = MessageEntity(
-            chatId = chatId,
-            senderName = cleanSender,
-            content = content,
-            timestamp = timestamp,
-            messageType = detectedType.name,
-            mediaUri = mediaUri,
-            isDeleted = isDeletionNotice,
-            originalContent = content
-        )
-        messageDao.insertMessage(messageEntity)
-        true
     }
 
     suspend fun insertImportedChat(
@@ -174,6 +204,27 @@ class ChatRepository(context: Context) {
     }
 
     companion object {
+        private val notificationMutex = Mutex()
+
+        fun normalizeText(input: String?): String {
+            if (input == null) return ""
+            return input
+                .replace("\u200E", "") // Left-to-Right Mark
+                .replace("\u200F", "") // Right-to-Left Mark
+                .replace("\u202A", "") // Left-to-Right Embedding
+                .replace("\u202B", "") // Right-to-Left Embedding
+                .replace("\u202C", "") // Pop Directional Formatting
+                .replace("\u202D", "") // Left-to-Right Override
+                .replace("\u202E", "") // Right-to-Left Override
+                .replace("\u2066", "") // Left-to-Right Isolate
+                .replace("\u2067", "") // Right-to-Left Isolate
+                .replace("\u2068", "") // First Strong Isolate
+                .replace("\u2069", "") // Pop Directional Isolate
+                .replace("\u00A0", " ") // Non-breaking space
+                .replace("\u202F", " ") // Narrow no-break space
+                .trim()
+        }
+
         fun getAvatarColor(name: String): Int {
             val palette = intArrayOf(
                 0xFF008069.toInt(),

@@ -111,8 +111,9 @@ class WhatsAppNotificationListener : NotificationListenerService() {
             val conversationTitle = messagingStyle.conversationTitle?.toString()
             val userPerson = messagingStyle.user
 
-            // Process recent messages from the MessagingStyle bundle
-            for (msg in messagingStyle.messages) {
+            val msgList = messagingStyle.messages
+            for (i in msgList.indices) {
+                val msg = msgList[i]
                 val text = msg.text?.toString() ?: ""
                 if (text.isBlank() && msg.dataMimeType == null) continue
 
@@ -127,7 +128,10 @@ class WhatsAppNotificationListener : NotificationListenerService() {
 
                 val timestamp = if (msg.timestamp > 0) msg.timestamp else postTime
                 val detectedType = detectMessageType(text, msg.dataMimeType)
-                val mediaUri = extractAndSaveMediaBitmap(extras, timestamp)
+                // Only extract media preview for the latest message in the list if it's media
+                val isLatest = (i == msgList.size - 1)
+                val isMedia = detectedType != MessageType.TEXT && detectedType != MessageType.DELETED
+                val mediaUri = if (isLatest && isMedia) extractAndSaveMediaBitmap(extras, timestamp) else null
 
                 repository.processNotificationMessage(
                     senderName = sender,
@@ -260,11 +264,14 @@ class WhatsAppNotificationListener : NotificationListenerService() {
     }
 
     private fun isSummaryMessage(text: String): Boolean {
-        val lower = text.lowercase()
-        return lower.matches(Regex("\\d+\\s+new messages?")) ||
-                lower.matches(Regex("(\\d+ messages? from \\d+ chats?)")) ||
+        val lower = text.lowercase().trim()
+        return lower.matches(Regex("\\d+\\s+new messages?.*")) ||
+                lower.matches(Regex("\\d+\\s+messages?.*")) ||
+                lower.contains("messages from") ||
                 lower.contains("checking for new messages") ||
-                lower.contains("whatsapp web is currently active")
+                lower.contains("whatsapp web is currently active") ||
+                lower.contains("backup in progress") ||
+                lower.contains("finished backup")
     }
 
     companion object {

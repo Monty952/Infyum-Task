@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- WhatsApp / WT Scan Theme Colors -->
+    <color name="wa_primary">#008069</color>
+    <color name="wa_primary_dark">#075E54</color>
+    <color name="wa_accent">#25D366</color>
+    <color name="wa_bg_light">#F5F8F6</color>
+    <color name="wa_card_bg">#FFFFFF</color>
+    <color name="wa_text_primary">#111B21</color>
+    <color name="wa_text_secondary">#667781</color>
+    <color name="wa_divider">#E2E8E4</color>
+    
+    <!-- UI Component Colors -->
+    <color name="wa_chip_selected">#008069</color>
+    <color name="wa_chip_unselected">#EAEFEA</color>
+    <color name="wa_chip_text_unselected">#4B5563</color>
+    <color name="wa_badge_red">#EA0038</color>
+    <color name="wa_delete_highlight">#FFF1F2</color>
+    <color name="wa_delete_text">#E11D48</color>
+    <color name="wa_bubble_incoming">#FFFFFF</color>
+    <color name="wa_bubble_outgoing">#E7FFDB</color>
+    <color name="wa_bottom_nav_indicator">#D0F2DF</color>
+    <color name="wa_empty_circle_bg">#F1F5F2</color>
+    <color name="wa_card_border">#EAEAEA</color>
+</resources>

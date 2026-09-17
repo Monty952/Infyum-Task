@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Green circle -->
+    <path
+        android:fillColor="#008069"
+        android:pathData="M60,60m-40,0a40,40 0,1 1,80 0a40,40 0,1 1,-80 0" />
+    <!-- White play triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,44l24,16 -24,16z" />
+    <!-- Sad face circle badge on bottom right -->
+    <path
+        android:fillColor="#F1F5F2"
+        android:pathData="M78,74m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0" />
+    <path
+        android:fillColor="#8E9AA0"
+        android:pathData="M72,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0 M84,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path
+        android:strokeColor="#8E9AA0"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M73,78 Q78,75 83,78" />
+</vector>

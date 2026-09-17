@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="44"
+    android:viewportHeight="44">
+    <!-- Light green circle background -->
+    <path
+        android:fillColor="#E3F7EE"
+        android:pathData="M22,22m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0" />
+    <!-- Green download icon -->
+    <path
+        android:fillColor="#008069"
+        android:pathData="M22,14v10l3.5,-3.5 1.4,1.4 -5.9,5.9 -5.9,-5.9 1.4,-1.4 3.5,3.5V14h2zM15,29h14v2H15v-2z" />
+</vector>

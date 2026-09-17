@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Rounded rectangular frame with soft grey background -->
+    <path
+        android:fillColor="#EAEAEA"
+        android:pathData="M30,20 h60 a12,12 0 0 1 12,12 v56 a12,12 0 0 1 -12,12 h-60 a12,12 0 0 1 -12,-12 v-56 a12,12 0 0 1 12,-12 z" />
+    <!-- Sun/circle -->
+    <path
+        android:fillColor="#008069"
+        android:pathData="M60,35m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0" />
+    <!-- Mountains -->
+    <path
+        android:fillColor="#008069"
+        android:pathData="M22,86l28,-36 14,18 20,-26 18,44H22z" />
+    <!-- Sad face circle badge on bottom right -->
+    <path
+        android:fillColor="#F1F5F2"
+        android:pathData="M78,74m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0" />
+    <!-- Sad face eyes -->
+    <path
+        android:fillColor="#8E9AA0"
+        android:pathData="M72,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0 M84,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <!-- Sad face frown -->
+    <path
+        android:strokeColor="#8E9AA0"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M73,78 Q78,75 83,78" />
+</vector>

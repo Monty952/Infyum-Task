@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Paper sheet with folded top right corner -->
+    <path
+        android:fillColor="#EAEAEA"
+        android:pathData="M34,20 h36 l18,18 v54 a8,8 0 0 1 -8,8 h-46 a8,8 0 0 1 -8,-8 v-64 a8,8 0 0 1 8,-8 z" />
+    <path
+        android:fillColor="#D0D0D0"
+        android:pathData="M70,20 v18 h18 z" />
+    <!-- Green horizontal lines -->
+    <path
+        android:fillColor="#008069"
+        android:pathData="M44,48 h32 v4 h-32 z M44,58 h32 v4 h-32 z M44,68 h20 v4 h-20 z" />
+    <!-- Sad face circle badge on bottom right -->
+    <path
+        android:fillColor="#F1F5F2"
+        android:pathData="M78,74m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0" />
+    <path
+        android:fillColor="#8E9AA0"
+        android:pathData="M72,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0 M84,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path
+        android:strokeColor="#8E9AA0"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M73,78 Q78,75 83,78" />
+</vector>

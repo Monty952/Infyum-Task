@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_card"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How It Works &amp; Technical Limitations"
+        android:textColor="@color/wa_text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Real-Time Notification Recovery"
+                android:textColor="@color/wa_primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="3dp"
+                android:text="The app uses Android NotificationListenerService to read WhatsApp message notifications. As soon as a message notification arrives, it is saved locally to the Room database. When WhatsApp posts a 'This message was deleted' notification, our service links it to the original message and marks it as deleted, allowing you to read what was originally sent!"
+                android:textColor="@color/wa_text_secondary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="2. Media Recovery &amp; Scoped Storage Limitations"
+                android:textColor="@color/wa_primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="3dp"
+                android:text="• Notifications only convey text and thumbnail preview bitmaps (when available). Real-time raw audio/video files are never broadcast in notifications.\n• On Android 11+ (API 30+), Scoped Storage isolates WhatsApp's internal sandbox. No third-party app can access WhatsApp raw files without private or unsupported exploits.\n• To recover full media (photos, voice notes, videos, documents, and stickers) completely and safely without hacks, use the 'Import Chat' feature by exporting your WhatsApp chat with media!"
+                android:textColor="@color/wa_text_secondary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="3. Chat Backup &amp; Restore"
+                android:textColor="@color/wa_primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="3dp"
+                android:text="All captured and imported messages are stored securely on your local device. You can create a local JSON backup and restore it anytime without relying on cloud services."
+                android:textColor="@color/wa_text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnDismiss"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp"
+        android:text="Got it" />
+
+</LinearLayout>

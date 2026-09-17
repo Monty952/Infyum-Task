@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Green circle -->
+    <path
+        android:fillColor="#008069"
+        android:pathData="M60,60m-40,0a40,40 0,1 1,80 0a40,40 0,1 1,-80 0" />
+    <!-- White headphones -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,36c-11.05,0 -20,8.95 -20,20v14c0,3.31 2.69,6 6,6h4V60h-6v-4c0,-8.84 7.16,-16 16,-16s16,7.16 16,16v4h-6v16h4c3.31,0 6,-2.69 6,-6V56C80,44.95 71.05,36 60,36z" />
+    <!-- Sad face circle badge on bottom right -->
+    <path
+        android:fillColor="#F1F5F2"
+        android:pathData="M78,74m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0" />
+    <path
+        android:fillColor="#8E9AA0"
+        android:pathData="M72,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0 M84,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path
+        android:strokeColor="#8E9AA0"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M73,78 Q78,75 83,78" />
+</vector>

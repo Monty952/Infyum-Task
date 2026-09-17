@@ -1,0 +1,73 @@
+<resources>
+    <string name="app_name">WT Scan</string>
+    <string name="title_whats_delete">WhatsDelete</string>
+    <string name="title_import_chat">Import Chat</string>
+    <string name="title_direct_chat">Direct Chat</string>
+    
+    <!-- Tabs -->
+    <string name="tab_message">Message</string>
+    <string name="tab_media_files">Media Files</string>
+    
+    <!-- Filter Chips -->
+    <string name="chip_photo">Photo</string>
+    <string name="chip_video">Video</string>
+    <string name="chip_audio">Audio</string>
+    <string name="chip_voice_note">Voice Note</string>
+    <string name="chip_document">Document</string>
+    <string name="chip_zip">Zip</string>
+    <string name="chip_gif">Gif</string>
+    <string name="chip_sticker">Sticker</string>
+
+    <!-- Empty States -->
+    <string name="empty_deleted_messages_title">No deleted messages yet.</string>
+    <string name="empty_deleted_messages_sub">Deleted messages will appear here</string>
+    <string name="empty_imported_chats_sub">You don\'t have any backup imported yet !</string>
+    
+    <string name="empty_photo">No photos have been found yet.</string>
+    <string name="empty_video">No video have been found yet.</string>
+    <string name="empty_audio">No audio have been found yet.</string>
+    <string name="empty_voice_note">No voice notes have been found yet.</string>
+    <string name="empty_document">No document have been found yet.</string>
+    <string name="empty_zip">No zip files have been found yet.</string>
+    <string name="empty_gif">No gifs have been found yet.</string>
+    <string name="empty_sticker">No stickers have been found yet.</string>
+
+    <!-- Buttons & Actions -->
+    <string name="btn_import_chat">Import Chat</string>
+    <string name="btn_choose_whatsapp">WhatsApp</string>
+    <string name="btn_choose_wa_business">WhatsApp Business</string>
+    <string name="btn_choose_file_manager">File Manager</string>
+    <string name="btn_open_file_picker">OPEN FILE PICKER</string>
+    <string name="btn_cancel">CANCEL</string>
+    <string name="btn_backup">Create Backup</string>
+    <string name="btn_restore">Restore Backup</string>
+    <string name="btn_send_message">Open WhatsApp Chat</string>
+
+    <!-- Guide Dialog -->
+    <string name="dialog_zip_title">Select WhatsApp Chat ZIP</string>
+    <string name="dialog_zip_subtitle">Please select a WhatsApp chat export ZIP file.</string>
+    <string name="dialog_zip_steps">How to export from WhatsApp:\n1. Open any WhatsApp chat\n2. Tap ⋮ -> More -> Export chat\n3. Choose \'Without media\' or \'Include media\'\n4. Share/save the ZIP file\n5. Come back and select it here\n\nOnly .zip files will be selectable.</string>
+
+    <!-- Home Dashboard -->
+    <string name="home_tele_web_title">Tele Web</string>
+    <string name="home_tele_web_sub">Scan QR &amp; chat in second</string>
+    <string name="home_section_tools">WA Tools</string>
+    <string name="tool_status_saver_title">Status Saver</string>
+    <string name="tool_status_saver_sub">Save friend\'s stories instantly</string>
+    <string name="tool_direct_chat_title">Direct Chat</string>
+    <string name="tool_direct_chat_sub">Message without saving number</string>
+    <string name="tool_wa_delete_title">WA Delete</string>
+    <string name="tool_wa_delete_sub">View messages deleted by others</string>
+    <string name="tool_chat_backup_title">Chat Backup</string>
+    <string name="tool_chat_backup_sub">Backup your WT chat</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_tools">Tools</string>
+    <string name="nav_sticker">Sticker</string>
+
+    <!-- Permissions -->
+    <string name="permission_banner_title">Notification Access Required</string>
+    <string name="permission_banner_desc">To detect and recover deleted WhatsApp messages, enable Notification Access in Settings.</string>
+    <string name="btn_enable_permission">Enable Permission</string>
+</resources>

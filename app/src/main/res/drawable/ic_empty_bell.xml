@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <!-- Soft circular background -->
+    <path
+        android:fillColor="#F1F5F2"
+        android:pathData="M36,36m-34,0a34,34 0,1 1,68 0a34,34 0,1 1,-68 0" />
+    <!-- Bell icon -->
+    <path
+        android:fillColor="#111B21"
+        android:pathData="M36,20c-5.52,0 -10,4.48 -10,10v10l-4,4v2h28v-2l-4,-4V30c0,-5.52 -4.48,-10 -10,-10zM36,50c1.66,0 3,-1.34 3,-3h-6c0,1.66 1.34,3 3,3z" />
+    <!-- Red alert dot -->
+    <path
+        android:fillColor="#EA0038"
+        android:pathData="M44,22m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+</vector>
